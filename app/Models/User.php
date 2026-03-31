@@ -1,19 +1,20 @@
 <?php
 namespace App\Models;
 
+use App\Enums\RoleCode;
+use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements OAuthenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasUuid;
 
     protected $fillable = [
         'uuid',
@@ -25,7 +26,6 @@ class User extends Authenticatable implements OAuthenticatable
     ];
 
     protected $hidden = [
-        'id',
         'password',
         'remember_token',
         'deleted_at',
@@ -41,18 +41,10 @@ class User extends Authenticatable implements OAuthenticatable
         ];
     }
 
-    protected static function booted(): void
-    {
-        static::creating(function (self $user): void {
-            if (blank($user->uuid)) {
-                $user->uuid = (string) Str::uuid();
-            }
-        });
-    }
-
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class)->withTimestamps();
+        return $this->belongsToMany(Role::class)
+            ->withTimestamps();
     }
 
     public function createdTickets(): HasMany
@@ -80,8 +72,47 @@ class User extends Authenticatable implements OAuthenticatable
         return $this->hasMany(TicketActivity::class);
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function hasRole(string $roleCode): bool
     {
-        return $this->roles()->where('code', $roleCode)->exists();
+        return $this->roles()
+            ->where('code', $roleCode)
+            ->exists();
+    }
+
+    public function hasAnyRole(array $roleCodes): bool
+    {
+        return $this->roles()
+            ->whereIn('code', $roleCodes)
+            ->exists();
+    }
+
+    public function hasPermission(string $permissionCode): bool
+    {
+        return Permission::query()
+            ->where('code', $permissionCode)
+            ->whereHas('roles.users', function ($query): void {
+                $query->where('users.id', $this->id);
+            })
+            ->exists();
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole(RoleCode::ADMIN->value);
+    }
+
+    public function isAgent(): bool
+    {
+        return $this->hasRole(RoleCode::AGENT->value);
+    }
+
+    public function isCustomer(): bool
+    {
+        return $this->hasRole(RoleCode::CUSTOMER->value);
     }
 }
