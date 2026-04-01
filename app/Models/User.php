@@ -91,6 +91,15 @@ class User extends Authenticatable implements OAuthenticatable
             ->exists();
     }
 
+    public function permissions()
+    {
+        return $this->roles()
+            ->join('permission_role', 'roles.id', '=', 'permission_role.role_id')
+            ->join('permissions', 'permissions.id', '=', 'permission_role.permission_id')
+            ->select('permissions.*')
+            ->distinct();
+    }
+
     public function hasPermission(string $permissionCode): bool
     {
         return Permission::query()

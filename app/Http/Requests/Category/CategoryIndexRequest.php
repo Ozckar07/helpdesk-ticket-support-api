@@ -1,0 +1,28 @@
+<?php
+namespace App\Http\Requests\Category;
+
+use App\Enums\PermissionCode;
+use App\Http\Requests\ApiRequest;
+use Illuminate\Validation\Rule;
+
+class CategoryIndexRequest extends ApiRequest
+{
+    public function authorize(): bool
+    {
+        return $this->canAnyPermission([
+            PermissionCode::CATEGORY_VIEW_ANY->value,
+            PermissionCode::CATEGORY_VIEW->value,
+        ]);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'search'         => ['nullable', 'string', 'max:150'],
+            'is_active'      => ['nullable', 'boolean'],
+            'sort_by'        => ['nullable', 'string', Rule::in(['name', 'created_at'])],
+            'sort_direction' => $this->sortDirectionRules(),
+            'per_page'       => $this->perPageRules(),
+        ];
+    }
+}
