@@ -1,58 +1,230 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# HelpDesk API / Ticket Support API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST profesional para gestión de tickets de soporte técnico, construida con **Laravel 13**, **PHP 8.4** y **Laravel Passport**, siguiendo una arquitectura limpia, escalable y mantenible.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tabla de contenido
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [HelpDesk API / Ticket Support API](#helpdesk-api--ticket-support-api)
+  - [Tabla de contenido](#tabla-de-contenido)
+  - [Descripción](#descripción)
+  - [Propósito del proyecto](#propósito-del-proyecto)
+  - [Por qué este proyecto](#por-qué-este-proyecto)
+  - [Características principales](#características-principales)
+  - [Stack tecnológico](#stack-tecnológico)
+  - [Arquitectura del proyecto](#arquitectura-del-proyecto)
+    - [Controllers](#controllers)
+    - [Form Requests](#form-requests)
+    - [Repositories](#repositories)
+    - [Services](#services)
+    - [Resources](#resources)
+    - [Exceptions](#exceptions)
+  - [Módulos implementados](#módulos-implementados)
+    - [1. Auth](#1-auth)
+    - [2. Users](#2-users)
+    - [3. Catalogs](#3-catalogs)
+    - [4. Tickets](#4-tickets)
+    - [5. Ticket Messages](#5-ticket-messages)
+    - [6. Ticket Attachments](#6-ticket-attachments)
+    - [7. Ticket Activities](#7-ticket-activities)
+  - [Entidades principales](#entidades-principales)
+  - [Autenticación](#autenticación)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Descripción
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**HelpDesk API / Ticket Support API** es una API REST diseñada para gestionar un sistema de soporte técnico o mesa de ayuda.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Permite administrar usuarios, roles, tickets, mensajes, adjuntos, prioridades, categorías y estados, manteniendo trazabilidad de cambios importantes y aplicando reglas de negocio reales como:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- creación de tickets por clientes
+- asignación de tickets a agentes
+- cambio controlado de estados
+- historial de actividad
+- permisos por rol
+- filtros y búsqueda avanzada
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Propósito del proyecto
 
-```bash
-composer require laravel/boost --dev
+Este proyecto fue construido como una base realista de portafolio para demostrar experiencia en desarrollo backend profesional con Laravel, aplicando:
 
-php artisan boost:install
-```
+- buenas prácticas de código limpio
+- separación de responsabilidades
+- validaciones robustas
+- estructura preparada para escalar
+- manejo consistente de errores
+- diseño orientado a una API productiva
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+No es un CRUD simple.  
+Está planteado como una base seria para evolucionar a un sistema real de soporte.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Por qué este proyecto
 
-## Code of Conduct
+La mayoría de APIs de portafolio muestran solo operaciones básicas.  
+Este proyecto busca mostrar una arquitectura más madura y cercana a un entorno real, incluyendo:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- autenticación OAuth2 con Passport
+- control de acceso por roles y permisos
+- servicios para lógica de negocio
+- repositorios para acceso a datos
+- requests para validaciones
+- resources para serialización consistente
+- excepciones centralizadas
+- trazabilidad de acciones sobre tickets
 
-## Security Vulnerabilities
+El objetivo es demostrar criterio técnico, orden estructural y capacidad para diseñar una API mantenible a mediano y largo plazo.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Características principales
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- API REST versionada (`/api/v1`)
+- Autenticación con **Laravel Passport**
+- Gestión de usuarios y roles
+- Catálogos de:
+  - categorías
+  - prioridades
+  - estados
+- Creación y gestión de tickets
+- Asignación de tickets a agentes
+- Respuestas y notas internas
+- Adjuntos asociados a tickets y mensajes
+- Historial de actividad del ticket
+- Filtros, búsqueda y paginación
+- Soft deletes en entidades que lo requieren
+- Validaciones centralizadas con Form Requests
+- Uso de enums nativos de PHP
+- Manejo de errores y excepciones consistente
+- Preparado para crecer con Policies, tests y eventos
+
+---
+
+## Stack tecnológico
+
+- **PHP 8.4**
+- **Laravel 13**
+- **Laravel Passport**
+- **MySQL**
+- **Postman** para pruebas manuales
+- **PSR-4 Autoload**
+- **JSON API Resources**
+- **Form Requests**
+- **Repositories + Services**
+- **Native PHP Enums**
+
+---
+
+## Arquitectura del proyecto
+
+La solución sigue una arquitectura basada en capas:
+
+### Controllers
+Responsables únicamente de la capa HTTP:
+- reciben la request
+- delegan validación a Form Requests
+- llaman a Services o Repositories
+- retornan Resources o respuestas estructuradas
+
+### Form Requests
+Centralizan la validación de entrada y autorización básica por request.
+
+### Repositories
+Encapsulan el acceso a datos:
+- consultas
+- filtros
+- paginación
+- búsquedas
+- persistencia
+
+### Services
+Contienen la lógica de negocio:
+- creación de tickets
+- asignación de agentes
+- transiciones de estado
+- carga de adjuntos
+- historial de actividad
+
+### Resources
+Definen la forma exacta en la que la API responde al cliente.
+
+### Exceptions
+Centralizan errores de:
+- validación
+- autenticación
+- autorización
+- reglas de negocio
+- errores inesperados
+
+---
+
+## Módulos implementados
+
+### 1. Auth
+- login
+- logout
+- perfil autenticado
+- actualización de perfil
+
+### 2. Users
+- listado de usuarios
+- creación
+- actualización
+- eliminación lógica
+- consulta de agentes asignables
+
+### 3. Catalogs
+- categorías
+- prioridades
+- estados
+
+### 4. Tickets
+- listado con filtros
+- creación
+- edición
+- asignación
+- cambio de estado
+- cambio de prioridad
+- cambio de categoría
+
+### 5. Ticket Messages
+- listado de mensajes por ticket
+- creación de respuestas
+- notas internas
+
+### 6. Ticket Attachments
+- carga de archivos en ticket o mensaje
+
+### 7. Ticket Activities
+- trazabilidad de cambios importantes
+
+---
+
+## Entidades principales
+
+- `User`
+- `Role`
+- `Permission`
+- `Category`
+- `Priority`
+- `Status`
+- `Ticket`
+- `TicketMessage`
+- `TicketAttachment`
+- `TicketActivity`
+
+---
+
+## Autenticación
+
+La autenticación se implementa con **Laravel Passport**.
+
+Cada usuario autenticado obtiene un token Bearer que debe enviarse en el header:
+
+```http
+Authorization: Bearer {token}
