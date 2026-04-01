@@ -1,9 +1,9 @@
 <?php
 namespace App\Services;
 
+use App\Exceptions\CannotDeleteResourceException;
 use App\Models\Priority;
 use App\Repositories\Contracts\PriorityRepositoryInterface;
-use Illuminate\Validation\ValidationException;
 
 class PriorityService
 {
@@ -25,9 +25,10 @@ class PriorityService
     public function delete(Priority $priority): void
     {
         if ($priority->tickets()->exists()) {
-            throw ValidationException::withMessages([
-                'priority' => ['This priority cannot be deleted because it is in use by tickets.'],
-            ]);
+            throw new CannotDeleteResourceException(
+                resource: 'Priority',
+                reason: 'It is currently associated with one or more tickets.'
+            );
         }
 
         $this->priorityRepository->delete($priority);

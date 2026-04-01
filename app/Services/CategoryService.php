@@ -1,9 +1,9 @@
 <?php
 namespace App\Services;
 
+use App\Exceptions\CannotDeleteResourceException;
 use App\Models\Category;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
-use Illuminate\Validation\ValidationException;
 
 class CategoryService
 {
@@ -25,9 +25,10 @@ class CategoryService
     public function delete(Category $category): void
     {
         if ($category->tickets()->exists()) {
-            throw ValidationException::withMessages([
-                'category' => ['This category cannot be deleted because it is in use by tickets.'],
-            ]);
+            throw new CannotDeleteResourceException(
+                resource: 'Category',
+                reason: 'It is currently associated with one or more tickets.'
+            );
         }
 
         $this->categoryRepository->delete($category);

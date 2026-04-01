@@ -1,22 +1,23 @@
 <?php
 namespace App\Http\Requests;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Exists;
+use Illuminate\Validation\ValidationException;
 
 abstract class ApiRequest extends FormRequest
 {
     protected function failedValidation(Validator $validator): void
     {
-        throw new HttpResponseException(response()->json([
-            'success' => false,
-            'message' => 'Validation failed.',
-            'errors'  => $validator->errors(),
-            'meta'    => (object) [],
-        ], 422));
+        throw new ValidationException($validator);
+    }
+
+    protected function failedAuthorization(): void
+    {
+        throw new AuthorizationException('This action is unauthorized.');
     }
 
     protected function perPageRules(int $max = 100): array

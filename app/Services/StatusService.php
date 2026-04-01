@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Services;
 
+use App\Exceptions\CannotDeleteResourceException;
 use App\Models\Status;
 use App\Repositories\Contracts\StatusRepositoryInterface;
-use Illuminate\Validation\ValidationException;
 
 class StatusService
 {
@@ -25,9 +26,10 @@ class StatusService
     public function delete(Status $status): void
     {
         if ($status->tickets()->exists()) {
-            throw ValidationException::withMessages([
-                'status' => ['This status cannot be deleted because it is in use by tickets.'],
-            ]);
+            throw new CannotDeleteResourceException(
+                resource: 'Status',
+                reason: 'It is currently associated with one or more tickets.'
+            );
         }
 
         $this->statusRepository->delete($status);

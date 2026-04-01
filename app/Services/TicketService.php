@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Enums\TicketActivityType;
 use App\Enums\TicketStatusCode;
+use App\Exceptions\BusinessException;
+use App\Exceptions\InvalidStatusTransitionException;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
@@ -11,7 +13,6 @@ use App\Repositories\Contracts\StatusRepositoryInterface;
 use App\Repositories\Contracts\TicketRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class TicketService
 {
@@ -120,9 +121,13 @@ class TicketService
             $agent = $this->userRepository->findActiveByUuidOrFail($assignedAgentUuid);
 
             if (! $agent->isAdmin() && ! $agent->isAgent()) {
-                throw ValidationException::withMessages([
-                    'assigned_agent_uuid' => ['The selected user cannot be assigned as ticket agent.'],
-                ]);
+                throw new BusinessException(
+                    message: 'The selected user cannot be assigned as a ticket agent.',
+                    title: 'Invalid Ticket Assignment',
+                    errors: [
+                        'assigned_agent_uuid' => ['The selected user cannot be assigned as a ticket agent.'],
+                    ]
+                );
             }
 
             $oldAgent = $ticket->assignedAgent;
@@ -238,18 +243,23 @@ class TicketService
             $currentStatus = $ticket->status;
 
             if (! $currentStatus) {
-                throw ValidationException::withMessages([
-                    'status' => ['The current ticket status is invalid.'],
-                ]);
+                throw new BusinessException(
+                    message: 'The current ticket status is invalid.',
+                    title: 'Invalid Ticket Status'
+                );
             }
 
             $currentStatusCode = TicketStatusCode::from($currentStatus->code);
             $targetStatusCode  = TicketStatusCode::from($newStatus->code);
 
             if (! $currentStatusCode->canTransitionTo($targetStatusCode)) {
-                throw ValidationException::withMessages([
-                    'status_uuid' => ['The selected ticket status transition is not allowed.'],
-                ]);
+                throw new InvalidStatusTransitionException(
+                    from: $currentStatus->code,
+                    to: $newStatus->code,
+                    errors: [
+                        'status_uuid' => ['The selected ticket status transition is not allowed.'],
+                    ]
+                );
             }
 
             $updateData = [
