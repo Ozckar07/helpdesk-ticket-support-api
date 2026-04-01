@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Status\StatusIndexRequest;
 use App\Http\Requests\Status\StatusStoreRequest;
 use App\Http\Requests\Status\StatusUpdateRequest;
+use App\Http\Resources\Catalog\StatusCollection;
+use App\Http\Resources\Catalog\StatusResource;
 use App\Models\Status;
 use App\Repositories\Contracts\StatusRepositoryInterface;
 use App\Services\StatusService;
@@ -32,7 +34,7 @@ class StatusController extends Controller
 
         return ApiResponse::success(
             message: 'Statuses retrieved successfully.',
-            data: $statuses
+            data: new StatusCollection($statuses)
         );
     }
 
@@ -40,7 +42,7 @@ class StatusController extends Controller
     {
         return ApiResponse::success(
             message: 'Status retrieved successfully.',
-            data: $status
+            data: new StatusResource($status)
         );
     }
 
@@ -50,7 +52,7 @@ class StatusController extends Controller
 
         return ApiResponse::success(
             message: 'Status created successfully.',
-            data: $status,
+            data: new StatusResource($status),
             status: 201
         );
     }
@@ -61,7 +63,7 @@ class StatusController extends Controller
 
         return ApiResponse::success(
             message: 'Status updated successfully.',
-            data: $status
+            data: new StatusResource($status)
         );
     }
 

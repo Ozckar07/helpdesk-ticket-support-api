@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CategoryIndexRequest;
 use App\Http\Requests\Category\CategoryStoreRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
+use App\Http\Resources\Catalog\CategoryCollection;
+use App\Http\Resources\Catalog\CategoryResource;
 use App\Models\Category;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Services\CategoryService;
@@ -32,7 +34,7 @@ class CategoryController extends Controller
 
         return ApiResponse::success(
             message: 'Categories retrieved successfully.',
-            data: $categories
+            data: new CategoryCollection($categories)
         );
     }
 
@@ -40,7 +42,7 @@ class CategoryController extends Controller
     {
         return ApiResponse::success(
             message: 'Category retrieved successfully.',
-            data: $category
+            data: new CategoryResource($category)
         );
     }
 
@@ -50,7 +52,7 @@ class CategoryController extends Controller
 
         return ApiResponse::success(
             message: 'Category created successfully.',
-            data: $category,
+            data: new CategoryResource($category),
             status: 201
         );
     }
@@ -61,7 +63,7 @@ class CategoryController extends Controller
 
         return ApiResponse::success(
             message: 'Category updated successfully.',
-            data: $category
+            data: new CategoryResource($category)
         );
     }
 

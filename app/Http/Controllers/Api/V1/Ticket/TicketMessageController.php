@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1\Ticket;
 use App\Enums\PermissionCode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ticket\TicketMessageStoreRequest;
+use App\Http\Resources\Ticket\TicketMessageCollection;
+use App\Http\Resources\Ticket\TicketMessageResource;
 use App\Models\Ticket;
 use App\Repositories\Contracts\TicketMessageRepositoryInterface;
 use App\Services\TicketMessageService;
@@ -33,7 +35,7 @@ class TicketMessageController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket messages retrieved successfully.',
-            data: $messages
+            data: new TicketMessageCollection($messages)
         );
     }
 
@@ -49,7 +51,7 @@ class TicketMessageController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket message created successfully.',
-            data: $message,
+            data: new TicketMessageResource($message),
             status: 201
         );
     }

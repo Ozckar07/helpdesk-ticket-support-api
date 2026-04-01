@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Priority\PriorityIndexRequest;
 use App\Http\Requests\Priority\PriorityStoreRequest;
 use App\Http\Requests\Priority\PriorityUpdateRequest;
+use App\Http\Resources\Catalog\PriorityCollection;
+use App\Http\Resources\Catalog\PriorityResource;
 use App\Models\Priority;
 use App\Repositories\Contracts\PriorityRepositoryInterface;
 use App\Services\PriorityService;
@@ -32,7 +34,7 @@ class PriorityController extends Controller
 
         return ApiResponse::success(
             message: 'Priorities retrieved successfully.',
-            data: $priorities
+            data: new PriorityCollection($priorities)
         );
     }
 
@@ -40,7 +42,7 @@ class PriorityController extends Controller
     {
         return ApiResponse::success(
             message: 'Priority retrieved successfully.',
-            data: $priority
+            data: new PriorityResource($priority)
         );
     }
 
@@ -50,7 +52,7 @@ class PriorityController extends Controller
 
         return ApiResponse::success(
             message: 'Priority created successfully.',
-            data: $priority,
+            data: new PriorityResource($priority),
             status: 201
         );
     }
@@ -61,7 +63,7 @@ class PriorityController extends Controller
 
         return ApiResponse::success(
             message: 'Priority updated successfully.',
-            data: $priority
+            data: new PriorityResource($priority)
         );
     }
 

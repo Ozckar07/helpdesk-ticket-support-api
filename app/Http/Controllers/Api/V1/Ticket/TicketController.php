@@ -10,6 +10,8 @@ use App\Http\Requests\Ticket\TicketChangeStatusRequest;
 use App\Http\Requests\Ticket\TicketIndexRequest;
 use App\Http\Requests\Ticket\TicketStoreRequest;
 use App\Http\Requests\Ticket\TicketUpdateRequest;
+use App\Http\Resources\Ticket\TicketCollection;
+use App\Http\Resources\Ticket\TicketDetailResource;
 use App\Models\Ticket;
 use App\Repositories\Contracts\TicketRepositoryInterface;
 use App\Services\TicketService;
@@ -38,7 +40,7 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             message: 'Tickets retrieved successfully.',
-            data: $tickets
+            data: new TicketCollection($tickets)
         );
     }
 
@@ -50,7 +52,7 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket retrieved successfully.',
-            data: $ticket
+            data: new TicketDetailResource($ticket)
         );
     }
 
@@ -63,7 +65,17 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket created successfully.',
-            data: $ticket,
+            data: new TicketDetailResource($ticket->load([
+                'customer.roles',
+                'assignedAgent.roles',
+                'category',
+                'priority',
+                'status',
+                'messages.user',
+                'messages.attachments',
+                'attachments.uploadedBy',
+                'activities.user',
+            ])),
             status: 201
         );
     }
@@ -80,7 +92,17 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket updated successfully.',
-            data: $ticket
+            data: new TicketDetailResource($ticket->load([
+                'customer.roles',
+                'assignedAgent.roles',
+                'category',
+                'priority',
+                'status',
+                'messages.user',
+                'messages.attachments',
+                'attachments.uploadedBy',
+                'activities.user',
+            ]))
         );
     }
 
@@ -94,7 +116,17 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket assigned successfully.',
-            data: $ticket
+            data: new TicketDetailResource($ticket->load([
+                'customer.roles',
+                'assignedAgent.roles',
+                'category',
+                'priority',
+                'status',
+                'messages.user',
+                'messages.attachments',
+                'attachments.uploadedBy',
+                'activities.user',
+            ]))
         );
     }
 
@@ -109,7 +141,17 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket status changed successfully.',
-            data: $ticket
+            data: new TicketDetailResource($ticket->load([
+                'customer.roles',
+                'assignedAgent.roles',
+                'category',
+                'priority',
+                'status',
+                'messages.user',
+                'messages.attachments',
+                'attachments.uploadedBy',
+                'activities.user',
+            ]))
         );
     }
 
@@ -124,7 +166,17 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket priority changed successfully.',
-            data: $ticket
+            data: new TicketDetailResource($ticket->load([
+                'customer.roles',
+                'assignedAgent.roles',
+                'category',
+                'priority',
+                'status',
+                'messages.user',
+                'messages.attachments',
+                'attachments.uploadedBy',
+                'activities.user',
+            ]))
         );
     }
 
@@ -139,7 +191,17 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             message: 'Ticket category changed successfully.',
-            data: $ticket
+            data: new TicketDetailResource($ticket->load([
+                'customer.roles',
+                'assignedAgent.roles',
+                'category',
+                'priority',
+                'status',
+                'messages.user',
+                'messages.attachments',
+                'attachments.uploadedBy',
+                'activities.user',
+            ]))
         );
     }
 

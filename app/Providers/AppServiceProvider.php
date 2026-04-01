@@ -17,6 +17,7 @@ use App\Repositories\Eloquent\TicketAttachmentRepository;
 use App\Repositories\Eloquent\TicketMessageRepository;
 use App\Repositories\Eloquent\TicketRepository;
 use App\Repositories\Eloquent\UserRepository;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +36,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        JsonResource::withoutWrapping();
     }
 }

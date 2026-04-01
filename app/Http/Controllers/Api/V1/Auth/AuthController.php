@@ -3,6 +3,8 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\Auth\AuthTokenResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Support\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -45,12 +47,12 @@ class AuthController extends Controller
 
         return ApiResponse::success(
             message: 'Authenticated successfully.',
-            data: [
+            data: new AuthTokenResource([
                 'access_token' => $tokenResult->accessToken,
                 'token_type'   => 'Bearer',
                 'expires_at'   => $tokenResult->token->expires_at,
                 'user'         => $user->load('roles'),
-            ]
+            ])
         );
     }
 
@@ -58,7 +60,7 @@ class AuthController extends Controller
     {
         return ApiResponse::success(
             message: 'Authenticated user retrieved successfully.',
-            data: $request->user()->load('roles')
+            data: new UserResource($request->user()->load('roles'))
         );
     }
 

@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Requests\User\UserUpdateRequest;
+use App\Http\Resources\User\UserCollection;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\UserService;
@@ -32,7 +34,7 @@ class UserController extends Controller
 
         return ApiResponse::success(
             message: 'Users retrieved successfully.',
-            data: $users
+            data: new UserCollection($users)
         );
     }
 
@@ -40,7 +42,7 @@ class UserController extends Controller
     {
         return ApiResponse::success(
             message: 'User retrieved successfully.',
-            data: $user->load('roles')
+            data: new UserResource($user)
         );
     }
 
@@ -50,7 +52,7 @@ class UserController extends Controller
 
         return ApiResponse::success(
             message: 'User created successfully.',
-            data: $user,
+            data: new UserResource($user),
             status: 201
         );
     }
@@ -61,7 +63,7 @@ class UserController extends Controller
 
         return ApiResponse::success(
             message: 'User updated successfully.',
-            data: $user
+            data: new UserResource($user)
         );
     }
 
