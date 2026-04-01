@@ -12,12 +12,15 @@ class UserRepository implements UserRepositoryInterface
 {
     public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $sortBy = in_array(($filters['sort_by'] ?? 'name'), ['name', 'email', 'created_at'], true)
-            ? $filters['sort_by']
+        $requestedSortBy        = $filters['sort_by'] ?? 'name';
+        $requestedSortDirection = $filters['sort_direction'] ?? 'asc';
+
+        $sortBy = in_array($requestedSortBy, ['name', 'email', 'created_at'], true)
+            ? $requestedSortBy
             : 'name';
 
-        $sortDirection = in_array(($filters['sort_direction'] ?? 'asc'), ['asc', 'desc'], true)
-            ? $filters['sort_direction']
+        $sortDirection = in_array($requestedSortDirection, ['asc', 'desc'], true)
+            ? $requestedSortDirection
             : 'asc';
 
         return User::query()
@@ -34,11 +37,14 @@ class UserRepository implements UserRepositoryInterface
             )
             ->when(
                 array_key_exists('is_active', $filters),
-                fn($query) => $query->where('is_active', (bool) $filters['is_active'])
+                fn($query) => $query->where('is_active', filter_var($filters['is_active'], FILTER_VALIDATE_BOOLEAN))
             )
             ->when(
                 ! empty($filters['role_code']),
-                fn($query) => $query->whereHas('roles', fn($subQuery) => $subQuery->where('code', $filters['role_code']))
+                fn($query) => $query->whereHas(
+                    'roles',
+                    fn($subQuery) => $subQuery->where('code', $filters['role_code'])
+                )
             )
             ->orderBy($sortBy, $sortDirection)
             ->paginate($perPage)
