@@ -497,8 +497,8 @@ Después de correr los seeders, se crea un usuario administrador.
 
 El proyecto incluye archivos listos para importar en Postman:
 
-- `collection.postman.json`
-- `environment.postman.json`
+- `docs\postman\HelpDesk API - Ticket Support API.postman_collection.json`
+- `docs\postman\HelpDesk API - Local.postman_environment.json`
 
 ### Variables principales
 - `base_url`
