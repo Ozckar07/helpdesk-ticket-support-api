@@ -6,31 +6,75 @@ API REST profesional para gestión de tickets de soporte técnico, construida co
 
 ## Tabla de contenido
 
-- [Descripción](#descripción)
-- [Propósito del proyecto](#propósito-del-proyecto)
-- [Por qué este proyecto](#por-qué-este-proyecto)
-- [Características principales](#características-principales)
-- [Stack tecnológico](#stack-tecnológico)
-- [Arquitectura del proyecto](#arquitectura-del-proyecto)
-- [Módulos implementados](#módulos-implementados)
-- [Entidades principales](#entidades-principales)
-- [Autenticación](#autenticación)
-- [Autorización y permisos](#autorización-y-permisos)
-- [Manejo de errores y excepciones](#manejo-de-errores-y-excepciones)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Instalación](#instalación)
-- [Configuración del entorno](#configuración-del-entorno)
-- [Migraciones y seeders](#migraciones-y-seeders)
-- [Creación del cliente personal de Passport](#creación-del-cliente-personal-de-passport)
-- [Cómo ejecutar el proyecto](#cómo-ejecutar-el-proyecto)
-- [Usuario administrador por defecto](#usuario-administrador-por-defecto)
-- [Colección Postman](#colección-postman)
-- [Resumen de endpoints](#resumen-de-endpoints)
-- [Ejemplo de flujo de uso](#ejemplo-de-flujo-de-uso)
-- [Respuesta estándar de la API](#respuesta-estándar-de-la-api)
-- [Pruebas](#pruebas)
-- [Próximas mejoras](#próximas-mejoras)
-- [Autor](#autor)
+- [HelpDesk API / Ticket Support API](#helpdesk-api--ticket-support-api)
+  - [Tabla de contenido](#tabla-de-contenido)
+  - [Descripción](#descripción)
+  - [Propósito del proyecto](#propósito-del-proyecto)
+  - [Por qué este proyecto](#por-qué-este-proyecto)
+  - [Características principales](#características-principales)
+  - [Stack tecnológico](#stack-tecnológico)
+  - [Arquitectura del proyecto](#arquitectura-del-proyecto)
+    - [Controllers](#controllers)
+    - [Form Requests](#form-requests)
+    - [Repositories](#repositories)
+    - [Services](#services)
+    - [Resources](#resources)
+    - [Exceptions](#exceptions)
+  - [Módulos implementados](#módulos-implementados)
+    - [1. Auth](#1-auth)
+    - [2. Users](#2-users)
+    - [3. Catalogs](#3-catalogs)
+    - [4. Tickets](#4-tickets)
+    - [5. Ticket Messages](#5-ticket-messages)
+    - [6. Ticket Attachments](#6-ticket-attachments)
+    - [7. Ticket Activities](#7-ticket-activities)
+  - [Entidades principales](#entidades-principales)
+  - [Autenticación](#autenticación)
+  - [Autorización y permisos](#autorización-y-permisos)
+    - [Roles base](#roles-base)
+    - [Ejemplos de permisos](#ejemplos-de-permisos)
+  - [Manejo de errores y excepciones](#manejo-de-errores-y-excepciones)
+    - [Ejemplo de error de validación](#ejemplo-de-error-de-validación)
+    - [Casos cubiertos](#casos-cubiertos)
+  - [Estructura del proyecto](#estructura-del-proyecto)
+  - [Instalación](#instalación)
+    - [1. Clonar el proyecto](#1-clonar-el-proyecto)
+    - [2. Instalar dependencias](#2-instalar-dependencias)
+    - [3. Crear archivo `.env`](#3-crear-archivo-env)
+    - [4. Generar clave de aplicación](#4-generar-clave-de-aplicación)
+  - [Configuración del entorno](#configuración-del-entorno)
+  - [Migraciones y seeders](#migraciones-y-seeders)
+  - [Creación del cliente personal de Passport](#creación-del-cliente-personal-de-passport)
+  - [Cómo ejecutar el proyecto](#cómo-ejecutar-el-proyecto)
+    - [Servidor local](#servidor-local)
+    - [Endpoint de salud](#endpoint-de-salud)
+  - [Usuario administrador por defecto](#usuario-administrador-por-defecto)
+    - [Credenciales base](#credenciales-base)
+  - [Colección Postman](#colección-postman)
+    - [Variables principales](#variables-principales)
+    - [Recomendación de uso](#recomendación-de-uso)
+  - [Resumen de endpoints](#resumen-de-endpoints)
+  - [Auth](#auth)
+  - [Users](#users)
+  - [Categories](#categories)
+  - [Priorities](#priorities)
+  - [Statuses](#statuses)
+  - [Tickets](#tickets)
+  - [Ejemplo de flujo de uso](#ejemplo-de-flujo-de-uso)
+    - [1. Login](#1-login)
+    - [2. Crear una categoría](#2-crear-una-categoría)
+    - [3. Crear un usuario customer](#3-crear-un-usuario-customer)
+    - [4. Crear un ticket](#4-crear-un-ticket)
+    - [5. Listar tickets](#5-listar-tickets)
+    - [6. Asignar ticket a un agente](#6-asignar-ticket-a-un-agente)
+    - [7. Cambiar estado](#7-cambiar-estado)
+    - [8. Agregar mensaje](#8-agregar-mensaje)
+  - [Respuesta estándar de la API](#respuesta-estándar-de-la-api)
+    - [Respuesta exitosa](#respuesta-exitosa)
+    - [Respuesta con error](#respuesta-con-error)
+  - [Pruebas](#pruebas)
+  - [vendor/bin/phpunit](#vendorbinphpunit)
+  - [Autor](#autor)
 
 ---
 
@@ -634,25 +678,6 @@ O si usas PHPUnit directamente:
 
 ```bash
 vendor/bin/phpunit
-```
-
----
-
-## Próximas mejoras
-
-El proyecto está preparado para seguir creciendo con:
-
-- Policies completas por recurso
-- pruebas Feature y Unit más amplias
-- notificaciones por correo
-- eventos y listeners
-- colas para tareas pesadas
-- auditoría avanzada
-- SLA por prioridad
-- dashboard de métricas
-- exportación de reportes
-- documentación OpenAPI / Swagger
-
 ---
 
 ## Autor
